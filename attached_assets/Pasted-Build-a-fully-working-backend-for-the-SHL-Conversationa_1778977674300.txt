@@ -1,0 +1,60 @@
+Build a fully working backend for the SHL Conversational Recommender assignment and make it deployment-ready for Vercel.
+
+Use the uploaded files as the only source of truth:
+
+* SHL assignment PDFs
+* SHL product catalog PDF
+* C1 to C10 conversation trace files
+
+Create real code files in the project so I can download them locally later. Do not make a mockup.
+
+Create:
+
+* main.py or app.py
+* requirements.txt
+* any helper/data files needed
+* catalog.json extracted from the SHL product catalog PDF if needed
+* Vercel-compatible deployment files if needed, such as vercel.json or an api/ folder structure
+
+Required API contract:
+
+* GET /health → return HTTP 200 with {"status":"ok"}
+* POST /chat → accept:
+  {"messages":[{"role":"user"|"assistant","content":"<text>"}]}
+  and return exactly:
+  {
+  "reply":"<assistant text>",
+  "recommendations":[
+  {"name":"<assessment name>","url":"<SHL link>","test_type":"<type>"}
+  ],
+  "end_of_conversation": true|false
+  }
+
+Rules:
+
+* Use only items from the SHL catalog
+* Never invent products or URLs
+* Return up to 10 recommendations
+* Ask clarifying questions when the request is vague
+* Accept user refinements and corrections
+* Compare assessments when asked
+* Politely refuse unrelated/off-topic requests
+* Enforce the 8-turn limit
+* Keep the JSON schema exact with no extra fields
+* Use the sample conversation traces to shape behavior and ranking logic
+
+Deployment requirements:
+
+* Make the project runnable as a live public endpoint
+* If a standard FastAPI server is not suitable for Vercel, adapt the project to a Vercel-compatible Python API structure while keeping the same /health and /chat behavior
+* Include all necessary config so the app can be deployed cleanly
+* Expose the correct host/port behavior for local runs where applicable
+* Generate any README or setup notes needed
+
+Implementation:
+
+* Use Python and FastAPI logic where appropriate
+* Add simple ranking/matching logic for relevant assessments
+* Keep the code modular, clean, and easy to run
+* Make sure the generated files are real and downloadable from the project
+* Ensure the final result is a production-ready backend I can submit as a live endpoint URL
