@@ -14,7 +14,7 @@ from typing import Literal
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from openai import OpenAI
+import google.generativeai as genai
 from pydantic import BaseModel, field_validator
 
 from retrieval import format_catalog_for_prompt, load_catalog, retrieve
@@ -60,10 +60,8 @@ def startup_event() -> None:
 _openai_base_url = os.environ.get("AI_INTEGRATIONS_OPENAI_BASE_URL")
 _openai_api_key = os.environ.get("AI_INTEGRATIONS_OPENAI_API_KEY", "placeholder")
 
-client = OpenAI(
-    base_url=_openai_base_url,
-    api_key=_openai_api_key,
-)
+genai.configure(api_key=_openai_api_key)
+client = genai.GenerativeModel("gemini-1.5-pro")
 
 MODEL = "gpt-4.1"  # fast + capable, fits 30-second timeout
 
@@ -226,16 +224,16 @@ def chat(request: ChatRequest) -> ChatResponse:
         openai_messages.append({"role": msg.role, "content": msg.content})
 
     try:
-        completion = client.chat.completions.create(
-            model=MODEL,
-            messages=openai_messages,
-            max_completion_tokens=2048,
-            response_format={"type": "json_object"},
-            temperature=0.2,
-        )
-        raw_text = completion.choices[0].message.content or "{}"
+        prompt = system_content + "\n\n" + str(openai_messages)
+
+        client = genai.GenerativeModel("gemini=1.5-pro")
+
+        response = client.generate_content(prompt)
+        
+        raw_text = response.text
+
     except Exception as exc:
-        logger.error("OpenAI call failed: %s", exc)
+        logger.error("Gemini call failed: %s", exc)
         raise HTTPException(status_code=502, detail="LLM service unavailable") from exc
 
     # Parse and validate
