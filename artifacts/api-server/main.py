@@ -61,7 +61,9 @@ _openai_base_url = os.environ.get("AI_INTEGRATIONS_OPENAI_BASE_URL")
 _openai_api_key = os.environ.get("AI_INTEGRATIONS_OPENAI_API_KEY", "placeholder")
 
 genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
-client = genai.GenerativeModel("gemini-1.5-pro")
+model = genai.GenerativeModel(
+    model_name="models/gemini-1.5-flash"
+)
 
 MODEL = "gpt-4.1"  # fast + capable, fits 30-second timeout
 
@@ -226,9 +228,9 @@ def chat(request: ChatRequest) -> ChatResponse:
     try:
         prompt = system_content + "\n\n" + str(openai_messages)
 
-        client = genai.GenerativeModel("gemini=1.5-pro")
+        model = genai.GenerativeModel(model_name="models/gemini-1.5-flash")
 
-        response = client.generate_content(prompt)
+        response = model.generate_content(prompt)
         
         raw_text = response.text
 
