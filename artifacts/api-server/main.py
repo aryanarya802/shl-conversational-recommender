@@ -60,7 +60,7 @@ def startup_event() -> None:
 _openai_base_url = os.environ.get("AI_INTEGRATIONS_OPENAI_BASE_URL")
 _openai_api_key = os.environ.get("AI_INTEGRATIONS_OPENAI_API_KEY", "placeholder")
 
-genai.configure(api_key=_openai_api_key)
+genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
 client = genai.GenerativeModel("gemini-1.5-pro")
 
 MODEL = "gpt-4.1"  # fast + capable, fits 30-second timeout
