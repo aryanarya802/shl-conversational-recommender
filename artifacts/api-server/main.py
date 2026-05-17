@@ -28,7 +28,12 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 # App setup
 # ---------------------------------------------------------------------------
-app = FastAPI(title="SHL Conversational Recommender")
+app = FastAPI(
+    title="SHL Conversational Recommender",
+    docs_url="/api/docs",
+    openapi_url="/api/openapi.json",
+    redoc_url="/api/redoc",
+)
 
 app.add_middleware(
     CORSMiddleware,
